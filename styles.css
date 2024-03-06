@@ -1,0 +1,42 @@
+
+h1{
+    color: red;
+    text-align: center;
+    font-family: "Overpass", sans-serif;
+    font-size: 4vw;
+    margin-top: 4vw;
+    text-shadow: 
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000; /* Adjust the shadow values for the outline effect */
+}
+
+body{
+    background-image: url('creamBackground.jpeg');
+    background-size: cover; /* Adjusts the background image size to cover the entire viewport */
+    background-position: center; /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the background image from repeating */
+}
+
+
+.buttons {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.button {
+    display: inline-block;
+    padding: 2vw 5vw;
+    margin: 1vw;
+    text-decoration: none;
+    color: #fff;
+    background-color: #3498db; /* Set button background color */
+    border-radius: 5px;
+    transition: background-color 0.3s ease; /* Add a smooth transition effect */
+    font-size: 2vw;
+}
+
+.button:hover {
+    background-color: #2980b9; /* Change background color on hover */
+}
