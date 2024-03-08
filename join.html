@@ -15,19 +15,37 @@
 
 <body>
     <h1>Join!</h1>
+
+    <form id="dynamicForm">
+        <!-- The container for dynamically generated questions will go here -->
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name">
+
+
+        <div id="questionsContainer"></div>
+
+        <br>
+
+        <input type="submit" value="Submit">
+    </form>
+
     <div class="buttons">
         <a href="index.html" class="button">Back</a>
     </div>
+
+    
+
+
 
 
     <script type="module">
 
         // Import the functions you need from the SDKs you need
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js'
-        import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js'
+        import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js'
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
-    
+
         // Your web app's Firebase configuration
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
@@ -40,10 +58,58 @@
         appId: "1:176078442562:web:30d90f27d34d9bc5b95ddb",
         measurementId: "G-VEBCVDK86J"
         };
-    
+
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        const dataSize=0;
+
+        const db = getDatabase();
+        const optionsRef = ref(db, 'options/options');
+        onValue(optionsRef, (snapshot) => {
+            const data = snapshot.val();
+            dataSize = data.length;
+
+            const questionsContainer = document.getElementById('questionsContainer');
+
+            for (let i = 0; i<dataSize; i++){
+                const question = document.createElement('p');
+                question.textContent="Rank #" + (i+1);
+                questionsContainer.appendChild(question);
+                for (let j = 0; j<dataSize; j++){
+                    const label = document.createElement('label');
+                    label.textContent=data[j];
+                    label.for="answer" + i + "-"+ j;
+                    label.class="radio-label";
+
+                    const answer = document.createElement('input');
+                    answer.type = 'radio';
+                    answer.id = "answer" + i + "-"+ j;
+                    answer.name="answer" + i;
+                    answer.value = data[j];
+
+                    questionsContainer.appendChild(label);
+                    label.appendChild(answer);
+                }
+            }
+        })
+
+        function getPoints()
+
+
+        const form = document.getElementById("dynamicForm");
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get form data
+            const formData = new FormData(form);
+            
+
+        });
+
+
+
     </script>
 </body>
 

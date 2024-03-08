@@ -75,3 +75,12 @@ form {
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+
+.radio-label {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Optional: If you want to align the text to the right of the radio button */
+.radio-label input {
+}

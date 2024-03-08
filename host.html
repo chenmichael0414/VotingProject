@@ -73,12 +73,12 @@
       const form = document.getElementById("votingForm");
 
       form.addEventListener('submit', function (event) {
-      event.preventDefault(); // Prevent the default form submission
+        event.preventDefault(); // Prevent the default form submission
 
-      // Get form data
-      const formData = new FormData(form);
-      writeOptionsData(formData.get('voteFor'));
-      setTimeout(() => { window.location.replace("host2.html");  }, 3000);
+        // Get form data
+        const formData = new FormData(form);
+        writeOptionsData(formData.get('voteFor'));
+        setTimeout(() => { window.location.replace("host2.html");  }, 2000);
 
       });
     </script>
