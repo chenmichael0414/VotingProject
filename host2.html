@@ -16,14 +16,7 @@
 </head>
 
 <body>
-    <h1>Hosting</h1>
-
-    <form id="votingForm">
-        <label for="voteFor">Copy and Paste the Things Your Voting for</label>
-        <textarea id="voteFor" name="voteFor" required rows="5"></textarea>
-
-        <input type="submit" value="submit">
-    </form>
+    <h1>Hosting PT 2</h1>
 
         <script type="module">
 
@@ -49,29 +42,6 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-
-        function writeOptionsData(optionsString){
-          const options = optionsString.split('\n');
-          const db = getDatabase();
-
-          for (let i=0; i < options.length; i++){
-            set(ref(db, 'options'),{
-              options: options
-            });
-          }
-        }
-
-        const form = document.getElementById("votingForm");
-
-        form.addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        // Get form data
-        const formData = new FormData(form);
-        writeOptionsData(formData.get('voteFor'));
-        setTimeout(() => { window.location.replace("host2.html");  }, 3000);
-
-        });
     </script>
 
 
