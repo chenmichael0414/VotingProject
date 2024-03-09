@@ -48,13 +48,50 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
+        
         const db = getDatabase();
-        const optionsRef = ref(db, 'people');
+
+        var options = {};
+        var correspondingPoints = {};
+        const optionsRef = ref(db, 'options/options');
         onValue(optionsRef, (snapshot) => {
+            options = snapshot.val();
+
+            for (let i = 0; i<options.length; i++){
+                correspondingPoints[options[i]]=0;
+                console.log(correspondingPoints);
+            }
+        });
+
+
+        const peopleRef = ref(db, 'people');
+        onValue(peopleRef, (snapshot) => {
             const data = snapshot.val();
-            console.log(data);
-            console.log(data.valueOf());
-                
+            const keys = Object.keys(data);
+            console.log(keys);
+
+            for (let i = 0; i<options.length; i++){
+                correspondingPoints[options[i]]=0;
+            }
+            
+            for (let i = 0; i<keys.length; i++){
+                const name = keys[i];
+                const voted = Object.keys(data[name]);
+                for (let j = 0; j<voted.length; j++){
+                    if (options.includes(voted[j])){
+                        const addedPoints = data[name][voted[j]]['points'];
+                        correspondingPoints[voted[j]]+=addedPoints;
+                    }
+                    console.log(correspondingPoints);
+                    console.log(options);
+                }
+            }
+
+            for (let i = 0; i<options.length;i++){
+                set(ref(db, 'totals/' + options[i]),{
+                    points: correspondingPoints[options[i]]
+                });
+            }
             
         })
 
