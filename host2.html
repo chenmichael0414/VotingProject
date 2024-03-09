@@ -12,11 +12,38 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&family=Overpass:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+    <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
 
 </head>
 
-<body>
+<div>
     <h1>Hosting PT 2</h1>
+
+
+    <div class="leaderboard-container">
+        <h2>Leaderboard</h2>
+        <table id="leaderboard">
+            <thead>
+                <tr>
+                    <th>Option</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="leaderboard-container">
+        <h2>Graph</h2>
+        <div id="chart-container">
+            
+        </div>
+    </div>
+
 
 
     <div class="buttons">
@@ -59,7 +86,6 @@
 
             for (let i = 0; i<options.length; i++){
                 correspondingPoints[options[i]]=0;
-                console.log(correspondingPoints);
             }
         });
 
@@ -68,7 +94,6 @@
         onValue(peopleRef, (snapshot) => {
             const data = snapshot.val();
             const keys = Object.keys(data);
-            console.log(keys);
 
             for (let i = 0; i<options.length; i++){
                 correspondingPoints[options[i]]=0;
@@ -82,16 +107,58 @@
                         const addedPoints = data[name][voted[j]]['points'];
                         correspondingPoints[voted[j]]+=addedPoints;
                     }
-                    console.log(correspondingPoints);
-                    console.log(options);
                 }
             }
+            set(ref(db,'totals'), {});
 
             for (let i = 0; i<options.length;i++){
                 set(ref(db, 'totals/' + options[i]),{
                     points: correspondingPoints[options[i]]
                 });
             }
+
+            console.log(correspondingPoints);
+
+            function compare(a,b){return b[1]-a[1]}
+
+            const leaderboard = Object.entries(correspondingPoints);
+
+            console.log(leaderboard);
+
+            leaderboard.sort(compare);
+
+            console.log(leaderboard);
+            
+            const tbody = document.querySelector('#leaderboard tbody');
+            $("#leaderboard tr").remove(); 
+
+            // Populate the leaderboard table
+            leaderboard.forEach((option, index) => {
+                const row = tbody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+
+                cell1.textContent = option[0];
+                cell2.textContent = option[1];
+            });
+
+            var x = [];
+            var y =[];
+
+            for (let i = leaderboard.length-1; i>-1; i--){
+                x.push(leaderboard[i][0]);
+                y.push(leaderboard[i][1]);
+            }
+            
+            var bar = [
+                {
+                    x:x,
+                    y:y,
+                    type:'bar'
+                }
+            ];
+            Plotly.newPlot('chart-container', bar);
+
             
         })
 
