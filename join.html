@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Join</title>
 
     <!-- css page -->
     <link rel="stylesheet" href="styles.css">
@@ -19,7 +19,7 @@
     <form id="dynamicForm">
         <!-- The container for dynamically generated questions will go here -->
         <label for="name">Name</label>
-        <input type="text" name="name" id="name">
+        <input type="text" name="name" id="name" required>
 
 
         <div id="questionsContainer"></div>
@@ -28,6 +28,8 @@
 
         <input type="submit" value="Submit">
     </form>
+
+    <div id="confirmationMessage" class="confirmation-message"></div>
 
     <div class="buttons">
         <a href="index.html" class="button">Back</a>
@@ -87,6 +89,7 @@
                     answer.id = "answer" + i + "-"+ j;
                     answer.name="answer" + i;
                     answer.value = data[j];
+                    answer.required=true;
 
                     questionsContainer.appendChild(label);
                     label.appendChild(answer);
@@ -100,7 +103,7 @@
 
 
         const form = document.getElementById("dynamicForm");
-
+        const confirmationMessage = document.getElementById('confirmationMessage');
         form.addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent the default form submission
 
@@ -119,7 +122,9 @@
                     points : points
                 });
             }
-            
+            confirmationMessage.textContent = 'Form submitted successfully!';
+            confirmationMessage.style.display = 'block';
+
 
 
         });

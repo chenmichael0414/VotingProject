@@ -119,3 +119,14 @@ tbody tr:first-child {
     font-weight: bold;
     background-color: lightgreen;
 }
+
+.confirmation-message {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #d4edda; /* Bootstrap success alert color */
+    color: #155724; /* Bootstrap success alert text color */
+    border: 1px solid #c3e6cb; /* Bootstrap success alert border color */
+    border-radius: 5px;
+    text-align: center;
+}
