@@ -130,3 +130,23 @@ tbody tr:first-child {
     border-radius: 5px;
     text-align: center;
 }
+
+.discussion-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #ffffffbd;
+}
+
+#discussionTextArea {
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical; /* Allow vertical resizing */
+    transition: border-color 0.3s ease; /* Add a smooth transition effect for border color */
+}
+
+#discussionTextArea:focus {
+    border-color: #4CAF50; /* Change border color on focus */
+}
