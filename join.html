@@ -35,7 +35,6 @@
         <a href="index.html" class="button">Back</a>
     </div>
 
-    
 
 
 
@@ -68,6 +67,13 @@
 
         const db = getDatabase();
         const optionsRef = ref(db, 'options/options');
+
+        const amountRef = ref(db, 'amount/amount');
+        var amount = 0;
+        on(amountRef, (snapshot) =>{
+            amount = snapshot.val();
+            console.log(amount);
+        });
         onValue(optionsRef, (snapshot) => {
             const data = snapshot.val();
             dataSize = data.length;
@@ -128,6 +134,7 @@
 
 
         });
+
 
 
 

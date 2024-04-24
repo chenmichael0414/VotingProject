@@ -20,7 +20,10 @@
 
     <form id="votingForm">
         <label for="voteFor">Copy and Paste the Things Your Voting for</label>
-        <textarea id="voteFor" name="voteFor" required rows="5"></textarea>
+        <textarea id="voteFor" name="voteFor" required rows="5" required></textarea>
+
+        <label for="amount">How many votes are we getting?</label>
+        <input type="number" id="amount" name="amount" required>
 
         <input type="submit" value="submit">
     </form>
@@ -80,6 +83,7 @@
 
         const db = getDatabase();
         set(ref(db,'people'), {});
+        set(ref(db,'amount'), {amount: formData.get('amount')})
 
 
         writeOptionsData(formData.get('voteFor'));
