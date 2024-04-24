@@ -70,7 +70,7 @@
 
         const amountRef = ref(db, 'amount/amount');
         var amount = 0;
-        on(amountRef, (snapshot) =>{
+        onValue(amountRef, (snapshot) =>{
             amount = snapshot.val();
             console.log(amount);
         });
@@ -80,7 +80,7 @@
 
             const questionsContainer = document.getElementById('questionsContainer');
 
-            for (let i = 0; i<dataSize; i++){
+            for (let i = 0; i<amount; i++){
                 const question = document.createElement('p');
                 question.textContent="Rank #" + (i+1);
                 questionsContainer.appendChild(question);
@@ -104,7 +104,7 @@
         })
 
         function getPoints(rank){
-            return dataSize-rank;
+            return amount-rank;
         }
 
 
@@ -120,7 +120,7 @@
 
             const person = formData.get('name');
 
-            for (let i = 0; i<dataSize; i++){
+            for (let i = 0; i<amount; i++){
                 const choice = formData.get('answer' + i);
                 const points = getPoints(1+i);
 
