@@ -74,6 +74,31 @@
             amount = snapshot.val();
             console.log(amount);
         });
+
+        window.updateOptions = function(selectElement) {
+            const selectedOptions = [];
+            selectedOptions.push('');
+            const allSelectElements = document.querySelectorAll('.select-question');
+
+            allSelectElements.forEach(element => {
+                selectedOptions.push(element.value);
+                console.log(element.value);
+            });
+
+            allSelectElements.forEach(element => {
+                const options = element.querySelectorAll('option');
+                options.forEach(option => {
+                    if (selectedOptions.includes(option.value)) {
+                        if (element.value!=option.value){
+                            option.disabled = true;
+                        }
+                    } else {
+                        option.disabled = false;
+                    }
+                });
+            });
+        }
+
         onValue(optionsRef, (snapshot) => {
             const data = snapshot.val();
             dataSize = data.length;
@@ -81,31 +106,61 @@
             const questionsContainer = document.getElementById('questionsContainer');
 
             for (let i = 0; i<amount; i++){
-                const question = document.createElement('p');
-                question.textContent="Rank #" + (i+1);
+                const question = document.createElement('select');
+                question.id = "select" +i;
+                question.name = "select"+i;
+                question.setAttribute('class', 'select-question');
+                const questionLabel = document.createElement('label');
+                questionLabel.for = "select"+i;
+                questionLabel.textContent = "Rank #" + (i+1);
+                questionsContainer.appendChild(questionLabel);
                 questionsContainer.appendChild(question);
+                const defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.textContent = "Select an option";
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                question.appendChild(defaultOption);
+                question.required = true;
+                question.setAttribute('onchange', 'updateOptions(this)');
                 for (let j = 0; j<dataSize; j++){
-                    const label = document.createElement('label');
-                    label.textContent=data[j];
-                    label.for="answer" + i + "-"+ j;
-                    label.class="radio-label";
+                    
+                    const option = document.createElement('option');
+                    option.value = data[j];
+                    option.textContent = data[j];
+                    option.id = "answer" + i + "-" + j;
+                    option.name = "answer" + i;
+                    const thisQuestion = document.getElementById('select' + i);
+                    thisQuestion.appendChild(option);
 
-                    const answer = document.createElement('input');
-                    answer.type = 'radio';
-                    answer.id = "answer" + i + "-"+ j;
-                    answer.name="answer" + i;
-                    answer.value = data[j];
-                    answer.required=true;
+                    // const label = document.createElement('label');
+                    // label.textContent=data[j];
+                    // label.for="answer" + i + "-"+ j;
+                    // label.class="radio-label";
 
-                    questionsContainer.appendChild(label);
-                    label.appendChild(answer);
+                    // const answer = document.createElement('input');
+                    // answer.type = 'radio';
+                    // answer.id = "answer" + i + "-"+ j;
+                    // answer.name="answer" + i;
+                    // answer.value = data[j];
+                    // answer.required=true;
+
+                    // questionsContainer.appendChild(label);
+                    // label.appendChild(answer);
                 }
             }
         })
 
         function getPoints(rank){
-            if (amount = dataSize) return amount-rank;
-            else return amount+1-rank;
+            console.log('amount:' + amount);
+            console.log('rank:'+ rank);
+            console.log(1+Number(amount)-rank);
+            if (amount == dataSize) {
+                return Number(amount)-rank;
+            }
+            else {
+                return 1+Number(amount)-rank;
+            }
         }
 
 
@@ -116,14 +171,15 @@
 
             // Get form data
             const formData = new FormData(form);
-            
-            const dataArray = {};
 
             const person = formData.get('name');
 
+            console.log(formData.get('select'+0));
+
             for (let i = 0; i<amount; i++){
-                const choice = formData.get('answer' + i);
+                const choice = formData.get('select' + i);
                 const points = getPoints(1+i);
+                console.log('points:' +points);
 
                 set(ref(db, "people/" +person + "/" + choice),{
                     points : points
