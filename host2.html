@@ -49,11 +49,17 @@
     </div>
 
 
-    <div class="discussion-container">
-        <h2>Discussion Hosting</h2>
-        
-        <!-- Multi-line text box -->
-        <textarea id="discussionTextArea" rows="5"></textarea>
+    <div class="container clearfix">
+        <div class="discussion-container half-width">
+            <h2>Discussion Hosting</h2>
+            <!-- Multi-line text box -->
+            <textarea id="discussionTextArea" rows="10"></textarea>
+        </div>
+
+        <div class="voter-list-container half-width" id="votedPeople">
+            <h2>Voter List</h2>
+            <!-- Add your content for the voter list here -->
+        </div>
     </div>
 
 
@@ -106,6 +112,14 @@
         onValue(peopleRef, (snapshot) => {
             const data = snapshot.val();
             const keys = Object.keys(data);
+
+            const container = document.getElementById("votedPeople");
+            keys.forEach(key=>{
+                const listMem = document.createElement("p");
+                listMem.textContent = key;
+                container.appendChild(listMem);
+            });
+
 
             for (let i = 0; i<options.length; i++){
                 correspondingPoints[options[i]]=0;

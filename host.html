@@ -26,6 +26,13 @@
         <input type="number" id="amount" name="amount" required>
 
         <label for="system">What system?</label>
+        <select required id="system" name="system">
+          <option disabled selected>Pick one</option>
+          <option name="system" id="ranked">Ranked Choice</option>
+          <option name="system" id="straw">Straw poll</option>
+        </select>
+
+        <br><br>
  
         <input type="submit" value="submit">
     </form>
@@ -85,7 +92,8 @@
 
         const db = getDatabase();
         set(ref(db,'people'), {});
-        set(ref(db,'amount'), {amount: formData.get('amount')})
+        set(ref(db,'amount'), {amount: formData.get('amount')});
+        set(ref(db,'system'), {system: formData.get('system')});
 
 
         writeOptionsData(formData.get('voteFor'));

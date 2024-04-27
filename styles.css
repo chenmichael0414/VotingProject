@@ -131,11 +131,7 @@ tbody tr:first-child {
     text-align: center;
 }
 
-.discussion-container {
-    text-align: center;
-    padding: 20px;
-    background-color: #ffffffbd;
-}
+
 
 #discussionTextArea {
     width: 80%;
@@ -149,4 +145,30 @@ tbody tr:first-child {
 
 #discussionTextArea:focus {
     border-color: #4CAF50; /* Change border color on focus */
+}
+
+/* CSS for both containers */
+.discussion-container,
+.voter-list-container {
+    padding: 20px;
+    background-color: #ffffffbd;
+    text-align: center;
+}
+
+/* CSS for half-width containers */
+.half-width {
+    width: 50%; /* Adjust as needed */
+    float: left; /* Float the containers to the left */
+    box-sizing: border-box; /* Include padding and border in the width calculation */
+}
+
+/* Clear floating elements to prevent layout issues */
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#cookButton{
+    background-color: green;
 }

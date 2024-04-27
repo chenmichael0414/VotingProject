@@ -30,6 +30,9 @@
     </form>
 
     <div id="confirmationMessage" class="confirmation-message"></div>
+    <div class="buttons">
+        <button class="button" id="cookButton" onclick="toggleCook()">Let me cook</button>
+    </div>
 
     <div class="buttons">
         <a href="index.html" class="button">Back</a>
@@ -75,6 +78,13 @@
             console.log(amount);
         });
 
+        const systemRef = ref(db, 'system/system');
+        var syst = "";
+        onValue(systemRef, (snapshot) =>{
+            syst = snapshot.val();
+            console.log(syst);
+        });
+
         window.updateOptions = function(selectElement) {
             const selectedOptions = [];
             selectedOptions.push('');
@@ -102,52 +112,66 @@
         onValue(optionsRef, (snapshot) => {
             const data = snapshot.val();
             dataSize = data.length;
+            if (amount>dataSize){
+                amount = dataSize;
+            }
 
             const questionsContainer = document.getElementById('questionsContainer');
 
-            for (let i = 0; i<amount; i++){
-                const question = document.createElement('select');
-                question.id = "select" +i;
-                question.name = "select"+i;
-                question.setAttribute('class', 'select-question');
-                const questionLabel = document.createElement('label');
-                questionLabel.for = "select"+i;
-                questionLabel.textContent = "Rank #" + (i+1);
-                questionsContainer.appendChild(questionLabel);
-                questionsContainer.appendChild(question);
-                const defaultOption = document.createElement('option');
-                defaultOption.value = "";
-                defaultOption.textContent = "Select an option";
-                defaultOption.disabled = true;
-                defaultOption.selected = true;
-                question.appendChild(defaultOption);
-                question.required = true;
-                question.setAttribute('onchange', 'updateOptions(this)');
-                for (let j = 0; j<dataSize; j++){
-                    
-                    const option = document.createElement('option');
-                    option.value = data[j];
-                    option.textContent = data[j];
-                    option.id = "answer" + i + "-" + j;
-                    option.name = "answer" + i;
-                    const thisQuestion = document.getElementById('select' + i);
-                    thisQuestion.appendChild(option);
 
-                    // const label = document.createElement('label');
-                    // label.textContent=data[j];
-                    // label.for="answer" + i + "-"+ j;
-                    // label.class="radio-label";
-
-                    // const answer = document.createElement('input');
-                    // answer.type = 'radio';
-                    // answer.id = "answer" + i + "-"+ j;
-                    // answer.name="answer" + i;
-                    // answer.value = data[j];
-                    // answer.required=true;
-
-                    // questionsContainer.appendChild(label);
-                    // label.appendChild(answer);
+            if (!syst.localeCompare("Ranked Choice")){
+                for (let i = 0; i<amount; i++){
+                    const question = document.createElement('select');
+                    question.id = "select" +i;
+                    question.name = "select"+i;
+                    question.setAttribute('class', 'select-question');
+                    const questionLabel = document.createElement('label');
+                    questionLabel.for = "select"+i;
+                    questionLabel.textContent = "Rank #" + (i+1);
+                    questionsContainer.appendChild(questionLabel);
+                    questionsContainer.appendChild(question);
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = "";
+                    defaultOption.textContent = "Select an option";
+                    defaultOption.disabled = true;
+                    defaultOption.selected = true;
+                    question.appendChild(defaultOption);
+                    question.required = true;
+                    question.setAttribute('onchange', 'updateOptions(this)');
+                    for (let j = 0; j<dataSize; j++){
+                        
+                        const option = document.createElement('option');
+                        option.value = data[j];
+                        option.textContent = data[j];
+                        option.id = "answer" + i + "-" + j;
+                        option.name = "answer" + i;
+                        const thisQuestion = document.getElementById('select' + i);
+                        thisQuestion.appendChild(option);
+                    }
                 }
+            }
+            else if (!syst.localeCompare("Straw poll")){
+                const amountText = document.createElement('p');
+                amountText.textContent="You get "+ amount + " choices";
+                questionsContainer.appendChild(amountText);
+                data.forEach((option, index) =>{
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'option';
+                    checkbox.value = option;
+                    checkbox.id='option'+index;
+
+                    const label = document.createElement('label');
+                    label.textContent = option;
+                    label.htmlFor = 'option' + index;
+
+                    
+                    questionsContainer.appendChild(label);
+                    questionsContainer.appendChild(checkbox);
+                    
+                    questionsContainer.appendChild(document.createElement('br'));
+                });
             }
         })
 
@@ -174,16 +198,33 @@
 
             const person = formData.get('name');
 
-            console.log(formData.get('select'+0));
+            if (!syst.localeCompare("Ranked Choice")){
+                console.log(formData.get('select'+0));
 
-            for (let i = 0; i<amount; i++){
-                const choice = formData.get('select' + i);
-                const points = getPoints(1+i);
-                console.log('points:' +points);
+                for (let i = 0; i<amount; i++){
+                    const choice = formData.get('select' + i);
+                    const points = getPoints(1+i);
+                    console.log('points:' +points);
 
-                set(ref(db, "people/" +person + "/" + choice),{
-                    points : points
-                });
+                    set(ref(db, "people/" +person + "/" + choice),{
+                        points : points
+                    });
+                }
+            }
+
+            else if (!syst.localeCompare("Straw poll")){
+                const checkedOptions = document.querySelectorAll('input[name="option"]:checked');
+                if (checkedOptions.length > amount) {
+                    alert('You can only select up to ' + amount + ' choices.');
+                    return;
+                }
+                else{
+                    checkedOptions.forEach(choice =>{
+                        set(ref(db, "people/" +person + "/" + choice.value),{
+                            points : 1
+                        });
+                    });
+                }
             }
             confirmationMessage.textContent = 'Form submitted successfully!';
             confirmationMessage.style.display = 'block';
@@ -191,6 +232,21 @@
 
 
         });
+
+        window.toggleCook = function() {
+            const formData = new FormData(form);
+
+            const person = formData.get('name');
+            
+            var button = document.getElementById("cookButton");
+            if (button.innerHTML === "Let me cook") {
+                button.innerHTML = "Cooked";
+                button.style.backgroundColor = "red";
+            } else {
+                button.innerHTML = "Let me cook";
+                button.style.backgroundColor = "green";
+            }
+        }
 
 
 
