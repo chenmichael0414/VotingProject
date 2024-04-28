@@ -113,9 +113,15 @@
             const keys = Object.keys(data);
 
             const container = document.getElementById("votedPeople");
+            const votedList = container.querySelectorAll('.chefClass');
+
+            votedList.forEach(child=>{
+                child.remove();
+            })
             keys.forEach(key=>{
                 const listMem = document.createElement("p");
                 listMem.textContent = key;
+                listMem.setAttribute('class', "chefClass");
                 container.appendChild(listMem);
             });
 
