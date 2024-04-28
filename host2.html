@@ -50,10 +50,9 @@
 
 
     <div class="container clearfix">
-        <div class="discussion-container half-width">
+        <div class="discussion-container half-width" id="chefs">
             <h2>Discussion Hosting</h2>
-            <!-- Multi-line text box -->
-            <textarea id="discussionTextArea" rows="10"></textarea>
+            <button class="button" id="cookButton" onclick="kickTop()">Top Chef Dismissed</button>
         </div>
 
         <div class="voter-list-container half-width" id="votedPeople">
@@ -72,7 +71,7 @@
 
         // Import the functions you need from the SDKs you need
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js'
-        import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js'
+        import { getDatabase, ref, set, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js'
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
     
@@ -187,6 +186,38 @@
 
             
         })
+
+        const chefRef = ref(db, "chefs");
+        var chefs = {};
+        onValue(chefRef, (snapshot)=>{
+            chefs = snapshot.val();
+            const container = document.getElementById("chefs");
+
+            var currList = container.querySelectorAll(".chef");
+
+            currList.forEach(child=>{
+                child.remove();
+            })
+            if (chefs!=null){
+                const values = Object.values(chefs);
+                values.forEach(value=>{
+                    const listMem = document.createElement("p");
+                    listMem.textContent = value;
+                    listMem.setAttribute("class", "chef");
+                    container.appendChild(listMem);
+                })
+            }
+        });
+
+        window.kickTop = function(){
+            if (chefs.length == 0){
+                return;
+            }
+            else{
+                var keys = Object.keys(chefs);
+                remove(ref(db,"chefs/" + keys[0]));
+            }
+        }
 
     </script>
 
