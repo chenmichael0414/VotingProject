@@ -24,7 +24,10 @@
 
         <div id="questionsContainer"></div>
 
-        <br>
+        <!-- <br>
+        <label for="imageUpload">Upload a Selfie</label>
+        <input type="file" id="imageUpload" name="image" accept="image/*">
+        <br> -->
 
         <input type="submit" value="Submit">
     </form>
@@ -235,6 +238,7 @@
                     return;
                 }
                 else{
+                    set(ref(db, "people/" +person),{});
                     checkedOptions.forEach(choice =>{
                         set(ref(db, "people/" +person + "/" + choice.value),{
                             points : 1

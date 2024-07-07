@@ -86,20 +86,24 @@
 
       form.addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent the default form submission
-
         // Get form data
         const formData = new FormData(form);
+        if (formData.get('system')===null){
+          alert('Please select a voting system');
+        }
 
-        const db = getDatabase();
-        set(ref(db,'people'), {});
-        set(ref(db,'amount'), {amount: formData.get('amount')});
-        set(ref(db,'system'), {system: formData.get('system')});
-        set(ref(db,'chefs'), {});
+        else{
+
+          const db = getDatabase();
+          set(ref(db,'people'), {});
+          set(ref(db,'amount'), {amount: formData.get('amount')});
+          set(ref(db,'system'), {system: formData.get('system')});
+          set(ref(db,'chefs'), {});
 
 
-        writeOptionsData(formData.get('voteFor'));
-        setTimeout(() => { window.location.replace("host2.html");  }, 2000);
-
+          writeOptionsData(formData.get('voteFor'));
+          setTimeout(() => { window.location.replace("host2.html");  }, 2000);
+        }
       });
     </script>
 </body>
